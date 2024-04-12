@@ -1,15 +1,16 @@
-import fs from 'fs';
-import path from 'path';
+import * as vscode from 'vscode'
+import * as fs from 'fs';
+import * as path from 'path';
 
 interface TreeNode {
-
     name: string;
     children: TreeNode[];
-
 }
 
 export function buildTree(directory : string) : TreeNode {
-    let root : TreeNode = { name: directory, children: [] }
+    let splitPath = directory.split('/');
+    let fileName = splitPath[splitPath.length - 1];
+    let root : TreeNode = { name: `<b>${fileName}</b>`, children: [] }
 
     traverseDirectory(directory, root);
 
@@ -21,25 +22,34 @@ export function buildTree(directory : string) : TreeNode {
 export function traverseDirectory(directory : string, root : TreeNode) {
 
 	let files = fs.readdirSync(directory);
-
+    //console.log(`Files in directory (${directory}): ${files}\n`);
 
 	for (let file of files) {
 
-		let filePath = path.join(directory, file);
+		let filePath = path.join(directory, "/", file);
 
-        let node : TreeNode = {name: filePath, children: []}
-        root.children.push(node);
+        //console.log(`File path: ${filePath}\n`);
+
+        let node : TreeNode;
+
+        let splitPath = filePath.split('/');
+        let fileName = splitPath[splitPath.length - 1];
 
 		if (fs.statSync(filePath).isDirectory()) {
+            node = {name: `<b>${fileName}</b>`, children: []}
+            root.children.push(node);
 			traverseDirectory(filePath, node);
 		}
-	
+        else {
+            node = {name: fileName, children: []}
+            root.children.push(node);
+        }
 	}
-
 }
 
 export function renderTree(root : TreeNode) {
-    let html = '<li>${root.name}</li>';
+
+    let html = `<li>${root.name}</li>`;
 
     if (root.children) {
         html += "<ul>";
@@ -49,6 +59,6 @@ export function renderTree(root : TreeNode) {
         html += "</ul>";
     }
 
-    return '<ul>${html}</ul>';
+    return `<ul>${html}</ul>`;
 
 }
