@@ -9,22 +9,24 @@ export function activate(context: vscode.ExtensionContext) {
 
 	context.subscriptions.push(vscode.commands.registerCommand('Sapling.showTree', () => {
         const panel = vscode.window.createWebviewPanel(
+            // Create a new panel (tab)
             'newPanel',
-            'File tree',
+            // Named 'Sapling - File Tree'
+            'Sapling - File Tree',
             vscode.ViewColumn.One,
             {}
         );
 
-		
+        // Get the current directory of the user's workspace
         const workspaceRoot = getCurrentWorkspaceFolder();
-        //const workspaceRoot = "/Users/kobekimmes/Projects/Extensions/VS-Code/Sapling";
-        //const workspaceRoot = "/Users/kobekimmes/CognalysisProgrammingExercise";
-        //console.log(`Current directory: ${workspaceRoot}`);
 
+        // If a workspace is opened (and not undefined)
         if (workspaceRoot) {
-            console.log("Building tree");
+            // Build tree
             const root = buildTree(workspaceRoot);
+            // Generate HTML string of rendering
             const html = renderTree(root);
+            // Assign the tabs HTML to the HTML string
             panel.webview.html = html;
         }
     }));
@@ -32,7 +34,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 // This method is called when your extension is deactivated
 export function deactivate() {
-
+    //...
 }
 
 

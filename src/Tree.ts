@@ -3,15 +3,21 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 interface TreeNode {
+    // Filename
     name: string;
+    // Children files
     children: TreeNode[];
 }
 
 export function buildTree(directory : string) : TreeNode {
+    // Get the name of the current directory
     let splitPath = directory.split('/');
     let fileName = splitPath[splitPath.length - 1];
+    
+    // Create node with bolded text to indicate directory
     let root : TreeNode = { name: `<b>${fileName}</b>`, children: [] }
 
+    // Traverse tree to build the structure
     traverseDirectory(directory, root);
 
     return root;
@@ -21,25 +27,28 @@ export function buildTree(directory : string) : TreeNode {
 
 export function traverseDirectory(directory : string, root : TreeNode) {
 
-	let files = fs.readdirSync(directory);
-    //console.log(`Files in directory (${directory}): ${files}\n`);
+	// Using filesystem, get a list of all file entries from "directory"
+    let files = fs.readdirSync(directory);
 
 	for (let file of files) {
 
-		let filePath = path.join(directory, "/", file);
-
-        //console.log(`File path: ${filePath}\n`);
+		// Create new path for children files
+        let filePath = path.join(directory, "/", file);
 
         let node : TreeNode;
 
+        // Retrieve the file name
         let splitPath = filePath.split('/');
         let fileName = splitPath[splitPath.length - 1];
 
-		if (fs.statSync(filePath).isDirectory()) {
+		// Continue recursing if the file type is a directory
+        if (fs.statSync(filePath).isDirectory()) {
+            // Add new child node to "root" with bolded text to indicate directory when rendered
             node = {name: `<b>${fileName}</b>`, children: []}
             root.children.push(node);
 			traverseDirectory(filePath, node);
 		}
+        // Otherwise, add a new child node to "root" with non-bolded text
         else {
             node = {name: fileName, children: []}
             root.children.push(node);
@@ -47,6 +56,7 @@ export function traverseDirectory(directory : string, root : TreeNode) {
 	}
 }
 
+// Render the tree in plain-text using HTML, this is subject to change
 export function renderTree(root : TreeNode) {
 
     let html = `<li>${root.name}</li>`;
