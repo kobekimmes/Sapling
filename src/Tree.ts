@@ -15,7 +15,7 @@ export function buildTree(directory : string) : TreeNode {
     let fileName = splitPath[splitPath.length - 1];
     
     // Create node with bolded text to indicate directory
-    let root : TreeNode = { name: `<b>${fileName}</b>`, children: [] }
+    let root : TreeNode = { name: `<b>&#128193; ${fileName}</b>`, children: [] }
 
     // Traverse tree to build the structure
     traverseDirectory(directory, root);
@@ -44,13 +44,42 @@ export function traverseDirectory(directory : string, root : TreeNode) {
 		// Continue recursing if the file type is a directory
         if (fs.statSync(filePath).isDirectory()) {
             // Add new child node to "root" with bolded text to indicate directory when rendered
-            node = {name: `<b>${fileName}</b>`, children: []}
+            
+            node = {name: `&#128193; <b>${fileName}</b>`, children: []}
             root.children.push(node);
 			traverseDirectory(filePath, node);
 		}
         // Otherwise, add a new child node to "root" with non-bolded text
         else {
-            node = {name: fileName, children: []}
+            let periodIdx = fileName.indexOf('.');
+            let fileType = fileName.substring(periodIdx+1);
+            let fileEmoji;
+            
+            switch (fileType) {
+
+                case "py":
+                    fileEmoji = "&#128013;";
+                    break;
+                // case "pdf":
+                //     fileEmoji = "&#x1F4D6;";
+                //     break;
+                // case "cc":
+                // case "cpp":
+                //     fileEmoji = "&#127912;"
+                //     break;
+                // case "java":
+                //     fileEmoji = "&#128230;"
+                //     break;
+                
+                // Handles .txt files and any others without a specified emoji encoding
+                default: 
+                    fileEmoji = "&#128196"
+                    break;
+
+
+
+            }
+            node = {name: `${fileEmoji} ${fileName}`, children: []}
             root.children.push(node);
         }
 	}

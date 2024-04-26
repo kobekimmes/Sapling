@@ -14,10 +14,6 @@
   "contributes": {
     "commands": [
       {
-        "command": "Sapling.helloWorld",
-        "title": "Hello World"
-      },
-      {
         "command": "Sapling.showTree",
         "category": "Sapling",
         "title": "Show Tree"
