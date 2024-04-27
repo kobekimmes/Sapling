@@ -75,9 +75,6 @@ export function traverseDirectory(directory : string, root : TreeNode) {
                 default: 
                     fileEmoji = "&#128196"
                     break;
-
-
-
             }
             node = {name: `${fileEmoji} ${fileName}`, children: []}
             root.children.push(node);
@@ -88,10 +85,10 @@ export function traverseDirectory(directory : string, root : TreeNode) {
 // Render the tree in plain-text using HTML, this is subject to change
 export function renderTree(root : TreeNode) {
 
-    let html = `<li>${root.name}</li>`;
+    let html = `<li >${root.name}</li>`;
 
     if (root.children) {
-        html += "<ul>";
+        html += "<ul style=list-style-type: none;>";
         for (let child of root.children) {
             html += renderTree(child);
         }
